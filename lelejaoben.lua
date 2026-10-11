@@ -8,11 +8,8 @@ local function safeStart()
         local player = Players.LocalPlayer
 
         local function startMain()
-            -- ===== 加载 NullUI =====
             local NullLib = loadstring(game:HttpGetAsync("https://ghfast.top/https://raw.githubusercontent.com/ginzuss/nullui/refs/heads/main/NullUI.lua"))()
-            -- NullUI 库已加载
 
-            -- 创建主窗口
             local Window = NullLib:CreateWindow({
                 Name = 'FENGSAKEN',
                 Title = 'FENGSAKEN',
@@ -23,7 +20,6 @@ local function safeStart()
                 ConfigFolder = 'FENGSAKEN',
             })
 
-            -- 时间标签
             local TimeTag =
             task.spawn(function()
                 while true do
@@ -35,7 +31,6 @@ local function safeStart()
                 end
             end)
 
-            -- 创建选项卡
             local tabSettings   = Window:CreateTab({Name = "设置", Icon = "settings"})
             local tabGlobal     = Window:CreateTab({Name = "全局", Icon = "globe"})
             local tabGen        = Window:CreateTab({Name = "发电机", Icon = "cpu"})
@@ -48,7 +43,6 @@ local function safeStart()
             local tabAutoBlock  = Window:CreateTab({Name = "自动格挡", Icon = "shield"})
             local tabUI         = Window:CreateTab({Name = "界面", Icon = "layout-dashboard"})
 
-            -- ===== 辅助函数（与原脚本完全相同） =====
             local svc = {
                 Players      = game:GetService("Players"),
                 Run          = game:GetService("RunService"),
@@ -74,7 +68,6 @@ local function safeStart()
                 asset     = getcustomasset or function(p) return p end,
             }
 
-            -- 配置管理
             local cfg = {}
             do
                 local DIR  = "v1prware"
@@ -116,7 +109,6 @@ local function safeStart()
                 cfg.load()
             end
 
-            -- ======================== 辅助函数 ============================
             local function getTeamFolder(name)
                 local root = svc.WS:FindFirstChild("Players")
                 return root and root:FindFirstChild(name)
@@ -136,7 +128,6 @@ local function safeStart()
                 return _networkModule
             end
 
-            -- ==================== 设置选项卡 ====================
             local section = tabSettings:CreateSection({ Title = "常规设置",  }))
             local chatForceEnabled = cfg.get("chatForceEnabled", false)
             local chatForceConns = {}
@@ -173,7 +164,6 @@ local function safeStart()
             end
             applyTimerPos()
 
-            -- ==================== 全局选项卡 ====================
             local section = tabGlobal:CreateSection({ Title = "耐力",  }))
             local stam = {
                 on      = cfg.get("stamOn",      false),
@@ -330,7 +320,6 @@ local function safeStart()
                 if statusLoopThread then task.cancel(statusLoopThread); statusLoopThread = nil end
             end)
 
-            -- ==================== 发电机选项卡 ====================
             local section = tabGen:CreateSection({ Title = "自动解谜",  }))
             local flow = { on = cfg.get("flowOn", false), nodeDelay = cfg.get("flowNodeDelay", 0.04), lineDelay = cfg.get("flowLineDelay", 0.60) }
             local function flowKey(n) return n.row.."-"..n.col end
@@ -427,7 +416,6 @@ local function safeStart()
                 Decimals = false, Callback = function(v) flow.lineDelay = v; cfg.set("flowLineDelay", v) end
              }))
 
-            -- ==================== 杀手选项卡 ====================
             local section = tabKiller:CreateSection({ Title = "自瞄",  }))
             local aim = {
                 on=cfg.get("aimOn",false), cooldown=cfg.get("aimCooldown",0.3), lockTime=cfg.get("aimLockTime",0.4),
@@ -658,7 +646,6 @@ local function safeStart()
             section:AddToggle({ Text = "c00lkidd — 冲刺转向", Default=coolkidWSOOn, Callback=function(on) coolkidWSOOn=on; cfg.set("coolkidWSOOn",on) end }))
             section:AddToggle({ Text = "Noli — 虚空冲刺控制", Default=noliVoidRushOn, Callback=function(on) noliVoidRushOn=on; cfg.set("noliVoidRushOn",on); if not on then noliStop() end end }))
 
-            -- ==================== 视觉 (ESP) ====================
             local LocalPlayer = lp
             local Camera = svc.WS.CurrentCamera
 
@@ -1253,7 +1240,6 @@ local function safeStart()
             section:AddSlider({ Text = "幸存者填充透明度", Min = 0, Max = 1, Default = ESPSettings.survivorFillTransparency, Increment=0.01, Decimals = false, Callback=function(v) ESPSettings.survivorFillTransparency = v; cfg.set("survivorFillTrans", v) end }))
             section:AddSlider({ Text = "幸存者边框透明度", Min = 0, Max = 1, Default = ESPSettings.survivorOutlineTransparency, Increment=0.01, Decimals = false, Callback=function(v) ESPSettings.survivorOutlineTransparency = v; cfg.set("survivorOutlineTrans", v) end }))
 
-            -- ==================== 音乐选项卡 ====================
             local section = tabMusic:CreateSection({ Title = "LMS 音乐",  }))
             local music = { on=cfg.get("musicOn",false), selected=cfg.get("musicSel","CondemnedLMS"), cached={}, origId=nil, thread=nil }
             local musicDir = "v1prware/LMS_Songs"
@@ -1321,10 +1307,8 @@ local function safeStart()
             section:AddButton({ Text = "↓ 预加载 LMS", Callback=function() for name in pairs(musicTracks) do task.spawn(function()musicFetch(name)end); task.wait(0.1) end end }))
             lp.CharacterAdded:Connect(function() task.wait(3); if music.on then if music.thread then task.cancel(music.thread) end; music.thread=task.spawn(musicMonitor) end end)
 
-            -- ==================== 哨兵选项卡（Elliot, Chance, TwoTime） ====================
             local section = tabSurSen:CreateSection({ Title = "幸存者",  }))
 
-            -- Elliot 自瞄
             do
                 local section = tabSurSen:CreateSection({ Title = "Elliot 自瞄",  }))
                 local elliotEnabled = false
@@ -1514,7 +1498,6 @@ local function safeStart()
                 end }))
             end
 
-            -- Chance 自瞄
             do
                 local section = tabSurSen:CreateSection({ Title = "Chance 自瞄",  }))
                 local chanceAimEnabled = false
@@ -1693,7 +1676,6 @@ local function safeStart()
                 section:AddTextbox({ Placeholder = "", Callback=function(v) chanceCustomAnimID=v end }))
             end
 
-            -- TwoTime 背刺
             do
                 local section = tabSurSen:CreateSection({ Title = "TwoTime 背刺",  }))
                 local BS_BACKSTAB_THRESHOLD_COS = math.cos(math.rad(70))
@@ -2030,7 +2012,6 @@ local function safeStart()
                 end }))
             end
 
-            -- ==================== Jane Doe 选项卡 ====================
             do
                 local jd_Run = svc.Run
                 local jd_RS = svc.RS
@@ -2272,7 +2253,6 @@ local function safeStart()
                 end }))
             end
 
-            -- ==================== Veeronica 选项卡 ====================
             local section = tabVeeronica:CreateSection({ Title = "自动特技",  }))
             do
                 local atEnabled = false
@@ -2488,418 +2468,31 @@ local function safeStart()
                 end }))
             end
 
-            -- ==================== 自动格挡（完整版） ====================
-            local section = tabAutoBlock:CreateSection({ Title = "格挡控制",  }))
-
-            -- 攻击数据表
-            local attackData = {
-    ["1x1x1x1"] = {
-        anim = "rbxassetid://83829782357897",
-        swing = "rbxassetid://117173212095661",
-    },
-    ["John Doe"] = {
-        anim = "rbxassetid://105458270463374",
-        swing = "rbxassetid://140242176732868",
-    },
-    ["Noli"] = {  -- 普通 Noli，保留
-        anim = "rbxassetid://106538427162796",
-        swing = "rbxassetid://109348678063422",
-    },
-    ["The Admin"] = {  -- AdminNoli 皮肤独立条目
-        anim = "rbxassetid://91509234639766",
-        swing = "rbxassetid://131406927389838",
-    },
-    ["Nosferatu"] = {
-        anim = "rbxassetid://88451353906104",
-        swing = "rbxassetid://104910828105172",
-    },
-    ["Guest 666"] = {
-        anim = "rbxassetid://122709416391891",
-        swing = { "rbxassetid://119583605486352", "rbxassetid://79980897195554" },
-    },
-    ["Slasher"] = {
-        anim = "rbxassetid://126830014841198",
-        swing = nil,
-    },
-    ["c00lkidd"] = {
-        anim = "rbxassetid://18885909645",
-        swing = "rbxassetid://80516583309685",
-    },
-    ["xX4ceOfSpadesXx"] = {
-        anim = "rbxassetid://121293883585738",
-        swing = "rbxassetid://115026634746636",
-    },
-    ["The Pestilence"] = {
-        anim = "rbxassetid://124705663396411",
-        swing = nil,
-    },
-    ["Fleskhjerta"] = {
-        anim = "rbxassetid://121293883585738",
-        swing = "rbxassetid://85853080745515",
-    },
-    ["Hacklord"] = {
-        anim = "rbxassetid://126171487400618",
-        swing = "rbxassetid://119942598489800",
-    },
-    ["Milestone III (1x1x1x1)"] = {
-        anim = "rbxassetid://90620531468240",
-        swing = nil,
-    },
-    ["Milestone IV (1x1x1x1)"] = {
-        anim = "rbxassetid://90620531468240",
-        swing = nil,
-    },
-    ["Digital Rider"] = {
-        anim = "rbxassetid://127245564598429",
-        swing = "rbxassetid://74809026448465",
-    },
-    ["Annihilation"] = {
-        anim = "rbxassetid://93069721274110",
-        swing = nil,
-    },
-    ["Aberrant"] = {
-        anim = "rbxassetid://81299297965542",
-        swing = "rbxassetid://131123355704017",
-    },
-    ["Artful"] = {
-        anim = "rbxassetid://77375846492436",
-        swing = "rbxassetid://89004992452376",
-    },
-    ["Narrator"] = {
-        anim = "rbxassetid://93366464803829",
-        swing = "rbxassetid://128367348686124",
-    },
-    ["Milestone III (Noli)"] = {
-        anim = "rbxassetid://92567970681901",
-        swing = nil,
-    },
-    ["Retro"] = {
-        anim = "rbxassetid://118298475669935",
-        swing = nil,
-    },
-    ["White Pumpkin"] = {
-        anim = "rbxassetid://94958041603347",
-        swing = nil,
-    },
-    ["Pursuer"] = {
-        anim = "rbxassetid://109667959938617",
-        swing = "rbxassetid://108907358619313",
-    },
-    ["Milestone III (Slasher)"] = {
-        anim = "rbxassetid://106860049270347",
-        swing = nil,
-    },
-    ["Milestone IV (Slasher)"] = {
-        anim = "rbxassetid://130958529065375",
-        swing = nil,
-    },
-    ["Alfred Drevis"] = {
-        anim = "rbxassetid://108196996477620",
-        swing = nil,
-    },
-    ["Killer Kyle"] = {
-        anim = "rbxassetid://118298475669935",
-        swing = "rbxassetid://107444859834748",
-    },
-    ["Martyr"] = {
-        anim = "rbxassetid://114506382930939",
-        swing = "rbxassetid://121954639447247",
-    },
-    ["Celebration"] = {
-        anim = "rbxassetid://114126519127454",
-        swing = nil,
-    },
-    ["Mafioso"] = {
-        anim = "rbxassetid://70371667919898",
-        swing = "rbxassetid://84307400688050",
-    },
-    ["Milestone III (c00lkidd)"] = {
-        anim = "rbxassetid://84069821282466",
-        swing = nil,
-    },
-    ["Milestone IV (c00lkidd)"] = {
-        anim = "rbxassetid://84069821282466",
-        swing = nil,
-    },
-    ["Azure"] = {
-        anim = "rbxassetid://123172382755876",
-        swing = "rbxassetid://82843272472677",
-    },
-}
-
-            local GlobalAttackIDs = {}
-            local GlobalAttackSoundIDs = {}
-            for _, data in pairs(attackData) do
-                if data.anim then local id = tostring(data.anim):match("%d+"); if id then GlobalAttackIDs[id] = true end end
-                if data.swing then
-                    if type(data.swing) == "table" then for _, s in ipairs(data.swing) do local id = tostring(s):match("%d+"); if id then GlobalAttackSoundIDs[id] = true end end
-                    else local id = tostring(data.swing):match("%d+"); if id then GlobalAttackSoundIDs[id] = true end end
-                end
-            end
-
-            local function getBlockButton()
-                local pg = lp:FindFirstChild("PlayerGui"); if not pg then return nil end
-                local main = pg:FindFirstChild("MainUI"); if not main then return nil end
-                local container = main:FindFirstChild("AbilityContainer"); if not container then return nil end
-                return container:FindFirstChild("Block") or container:FindFirstChild("Guard")
-            end
-
-            local function pressBlock()
-                local btn = getBlockButton(); if not btn then return false end
-                local cd = btn:FindFirstChild("CooldownTime"); if cd and cd.Text ~= "" then return false end
-                pcall(function() btn:Activate() end)
-                for _, conn in ipairs(getconnections(btn.MouseButton1Click) or {}) do pcall(function() conn:Fire() end) end
-                return true
-            end
-
-            local function GetObjects()
-                local KillersFolder = svc.WS:FindFirstChild("Players") and svc.WS.Players:FindFirstChild("Killers")
-                local SurvivorsFolder = svc.WS.Players and svc.WS.Players:FindFirstChild("Survivors")
-                local Hitboxes = svc.WS:FindFirstChild("Hitboxes") or Instance.new("Folder", svc.WS)
-                Hitboxes.Name = "Hitboxes"
-                return KillersFolder, SurvivorsFolder, Hitboxes
-            end
-
-            local KillersFolder, SurvivorsFolder, Hitboxes = GetObjects()
-
-            local defaultParams = {
-                BaseHitboxSize    = Vector3.new(cfg.get("hitboxW",4.5), cfg.get("hitboxH",6), cfg.get("hitboxL",7.5)),
-                HitboxScale       = cfg.get("hitboxScale",1.0),
-                HitboxOffset      = cfg.get("hitboxOffset",-1.4),
-                HitboxColor       = Color3.fromRGB(cfg.get("hitboxColorR",255), cfg.get("hitboxColorG",255), cfg.get("hitboxColorB",255)),
-                HitboxOutlineColor= Color3.fromRGB(cfg.get("outlineColorR",255), cfg.get("outlineColorG",255), cfg.get("outlineColorB",255)),
-                ShowOutline       = cfg.get("showOutline",true),
-                OutlineThickness  = cfg.get("outlineThick",0.05),
-                ShowHitboxVisual  = cfg.get("showHitboxVisual",true),
-            }
-
-            getgenv().BaseHitboxSize     = defaultParams.BaseHitboxSize
-            getgenv().HitboxScale        = defaultParams.HitboxScale
-            getgenv().HitboxOffset       = defaultParams.HitboxOffset
-            getgenv().HitboxColor        = defaultParams.HitboxColor
-            getgenv().HitboxOutlineColor = defaultParams.HitboxOutlineColor
-            getgenv().ShowOutline        = defaultParams.ShowOutline
-            getgenv().OutlineThickness   = defaultParams.OutlineThickness
-            getgenv().ShowHitboxVisual   = defaultParams.ShowHitboxVisual
-            getgenv().KillerHitboxData   = {}
-            getgenv().AutoBlockEnabled   = false
-            getgenv().AutoBlockConnections = {}
-
-            local function CreateHitboxVisual()
-                local part = Instance.new("Part")
-                part.Name = "AttackHitboxVisual"
-                part.Size = getgenv().BaseHitboxSize * getgenv().HitboxScale
-                part.Color = getgenv().HitboxColor
-                part.Material = Enum.Material.ForceField
-                part.Transparency = getgenv().ShowHitboxVisual and 0.3 or 1
-                part.Anchored = true; part.CanCollide = false; part.CastShadow = false
-                part.Parent = Hitboxes
-                local outline = Instance.new("SelectionBox")
-                outline.Adornee = part
-                outline.Color3 = getgenv().HitboxOutlineColor
-                outline.LineThickness = getgenv().OutlineThickness
-                outline.Transparency = 0.1
-                outline.Visible = getgenv().ShowOutline and getgenv().ShowHitboxVisual
-                outline.Parent = part
-                return part
-            end
-
-            local function UpdateHitboxPosition(part, queryHitbox)
-                if part and queryHitbox then
-                    part.CFrame = queryHitbox.CFrame * CFrame.new(0, 0, getgenv().HitboxOffset)
-                    part.Size = getgenv().BaseHitboxSize * getgenv().HitboxScale
-                    part.Color = getgenv().HitboxColor
-                    part.Transparency = getgenv().ShowHitboxVisual and 0.3 or 1
-                    local outline = part:FindFirstChildOfClass("SelectionBox")
-                    if outline then
-                        outline.Color3 = getgenv().HitboxOutlineColor
-                        outline.LineThickness = getgenv().OutlineThickness
-                        outline.Visible = getgenv().ShowOutline and getgenv().ShowHitboxVisual
-                    end
-                end
-            end
-
-            local function ClearKillerHitbox(Killer)
-                local data = getgenv().KillerHitboxData[Killer]
-                if data then
-                    if data.part then data.part:Destroy() end
-                    if data.connection then data.connection:Disconnect() end
-                    getgenv().KillerHitboxData[Killer] = nil
-                end
-            end
-
-            local function UpdateAllHitboxVisuals()
-                for killer, data in pairs(getgenv().KillerHitboxData) do
-                    if data.part and data.part.Parent then
-                        data.part.Color = getgenv().HitboxColor
-                        data.part.Size = getgenv().BaseHitboxSize * getgenv().HitboxScale
-                        data.part.Transparency = getgenv().ShowHitboxVisual and 0.3 or 1
-                        local outline = data.part:FindFirstChildOfClass("SelectionBox")
-                        if outline then
-                            outline.Color3 = getgenv().HitboxOutlineColor
-                            outline.LineThickness = getgenv().OutlineThickness
-                            outline.Visible = getgenv().ShowOutline and getgenv().ShowHitboxVisual
+            local section = tabAutoBlock:CreateSection({ Title = "加载外部脚本",  }))
+            section:AddButton({ 
+                Text = "加载 FENG_BLOCK 脚本",
+                Callback = function()
+                    task.spawn(function()
+                        local success, result = pcall(function()
+                            return loadstring(game:HttpGet("https://raw.githubusercontent.com/lanan876/FENGHE/refs/heads/main/FENGBLOCK.lua"))()
+                        end)
+                        if success then
+                            Window:Notify({Title = "加载成功", Content = "FENG_BLOCK 脚本已加载", Duration = 3})
+                        else
+                            Window:Notify({Title = "加载失败", Content = tostring(result), Duration = 5})
                         end
-                    end
-                end
-            end
-
-            local OverlapParams = OverlapParams.new()
-            OverlapParams.MaxParts = 1
-            OverlapParams.FilterType = Enum.RaycastFilterType.Include
-
-            local function StartAttack(Killer, queryHitbox, Track)
-                ClearKillerHitbox(Killer)
-                local visualPart = CreateHitboxVisual()
-                UpdateHitboxPosition(visualPart, queryHitbox)
-                local updateConnection
-                updateConnection = svc.Run.Heartbeat:Connect(function()
-                    if not getgenv().AutoBlockEnabled then updateConnection:Disconnect(); return end
-                    if visualPart and visualPart.Parent and queryHitbox and queryHitbox.Parent then
-                        UpdateHitboxPosition(visualPart, queryHitbox)
-                    else updateConnection:Disconnect() end
-                end)
-                getgenv().KillerHitboxData[Killer] = { part = visualPart, connection = updateConnection }
-                if Track then
-                    Track.Stopped:Once(function() ClearKillerHitbox(Killer) end)
-                    Track.Destroying:Once(function() ClearKillerHitbox(Killer) end)
-                end
-                local LocalChar = lp.Character
-                if not LocalChar or LocalChar.Parent ~= SurvivorsFolder then return end
-                local LocalQuery = LocalChar:FindFirstChild("QueryHitbox")
-                if not LocalQuery then return end
-                local isC00lkidd = Killer.Name:lower():find("c00lkidd") or Killer.Name:lower():find("coolkidd")
-                local hitboxSize = getgenv().BaseHitboxSize * getgenv().HitboxScale
-                if isC00lkidd then
-                    OverlapParams.FilterDescendantsInstances = {LocalQuery}
-                    local Part = Instance.new("Part")
-                    Part.Name = "KillerDetectHitbox"
-                    Part.Size = hitboxSize
-                    Part.CFrame = queryHitbox.CFrame * CFrame.new(0, 0, getgenv().HitboxOffset)
-                    Part.CanCollide = false; Part.Anchored = true; Part.CastShadow = false
-                    Part.Material = Enum.Material.ForceField; Part.Transparency = 1
-                    Part.Parent = Hitboxes
-                    svc.Debris:AddItem(Part, 0.4)
-                    local hits = svc.WS:GetPartsInPart(Part, OverlapParams)
-                    if #hits > 0 then pressBlock() end
-                    return
-                end
-                for i = 1, 6 do
-                    if not getgenv().AutoBlockEnabled then break end
-                    if not LocalChar.Parent or LocalChar.Parent ~= SurvivorsFolder then break end
-                    OverlapParams.FilterDescendantsInstances = {LocalQuery}
-                    local Part = Instance.new("Part")
-                    Part.Name = "KillerDetectHitbox"
-                    Part.Size = hitboxSize
-                    Part.CFrame = queryHitbox.CFrame * CFrame.new(0, 0, getgenv().HitboxOffset)
-                    Part.CanCollide = false; Part.Anchored = true; Part.CastShadow = false
-                    Part.Material = Enum.Material.ForceField; Part.Transparency = 1
-                    Part.Parent = Hitboxes
-                    svc.Debris:AddItem(Part, 0.4)
-                    local hits = svc.WS:GetPartsInPart(Part, OverlapParams)
-                    if #hits > 0 then pressBlock(); break end
-                    task.wait(0.015)
-                end
-            end
-
-            local function HandleKiller(Killer)
-                if not Players:GetPlayerFromCharacter(Killer) then return end
-                local humanoid = Killer:FindFirstChildOfClass("Humanoid")
-                local queryHitbox = Killer:FindFirstChild("QueryHitbox")
-                local animator = humanoid and humanoid:FindFirstChildOfClass("Animator")
-                if not (animator and queryHitbox) then return end
-                local soundConnections = {}
-                local function OnSoundAdded(Sound)
-                    if not Sound:IsA("Sound") then return end
-                    local id = tostring(Sound.SoundId):match("%d+")
-                    if not id or not GlobalAttackSoundIDs[id] then return end
-                    local playedConn = Sound.Played:Connect(function()
-                        if not getgenv().AutoBlockEnabled then return end
-                        StartAttack(Killer, queryHitbox, Sound)
                     end)
-                    local stoppedConn = Sound.Stopped:Connect(function() ClearKillerHitbox(Killer) end)
-                    table.insert(soundConnections, playedConn); table.insert(soundConnections, stoppedConn)
-                    if Sound.IsPlaying then task.spawn(function() if getgenv().AutoBlockEnabled then StartAttack(Killer, queryHitbox, Sound) end end) end
                 end
-                for _, sound in ipairs(Killer:GetDescendants()) do OnSoundAdded(sound) end
-                local descendantConn = Killer.DescendantAdded:Connect(OnSoundAdded)
-                table.insert(soundConnections, descendantConn)
-                local function cleanupSounds() for _, conn in ipairs(soundConnections) do conn:Disconnect() end soundConnections = {} end
-                local connection = animator.AnimationPlayed:Connect(function(Track)
-                    if not getgenv().AutoBlockEnabled then connection:Disconnect(); return end
-                    local id = tostring(Track.Animation.AnimationId):match("%d+")
-                    if id and GlobalAttackIDs[id] then StartAttack(Killer, queryHitbox, Track) end
-                end)
-                local function cleanup() cleanupSounds(); connection:Disconnect(); ClearKillerHitbox(Killer) end
-                Killer.AncestryChanged:Connect(function() if not Killer.Parent then cleanup() end end)
-                table.insert(getgenv().AutoBlockConnections, { Disconnect = cleanup })
-            end
+             }))
 
-            local function EnableAutoBlock()
-                if getgenv().AutoBlockEnabled then return end
-                getgenv().AutoBlockEnabled = true
-                if getgenv().AutoBlockConnections then for _, con in ipairs(getgenv().AutoBlockConnections) do pcall(con.Disconnect, con) end end
-                getgenv().AutoBlockConnections = {}
-                if KillersFolder then
-                    for _, killer in ipairs(KillersFolder:GetChildren()) do HandleKiller(killer) end
-                    local childCon = KillersFolder.ChildAdded:Connect(HandleKiller)
-                    table.insert(getgenv().AutoBlockConnections, childCon)
-                end
-                Window:Notify({Title="乐紫自动格挡打开了记得演戏", Content = "",, Duration=3})
-            end
-
-            local function DisableAutoBlock()
-                if not getgenv().AutoBlockEnabled then return end
-                getgenv().AutoBlockEnabled = false
-                if getgenv().AutoBlockConnections then for _, con in ipairs(getgenv().AutoBlockConnections) do pcall(con.Disconnect, con) end end
-                getgenv().AutoBlockConnections = {}
-                for killer, data in pairs(getgenv().KillerHitboxData) do
-                    if data.part then data.part:Destroy() end
-                    if data.connection then data.connection:Disconnect() end
-                end
-                getgenv().KillerHitboxData = {}
-                Window:Notify({Title="乐紫格挡已关闭练你这个死人目押去吧", Content = "",, Duration=3})
-            end
-
-            section:AddToggle({ Text = "启用自动格挡", Default=false, Callback=function(state) if state then EnableAutoBlock() else DisableAutoBlock() end end }))
-
-            local section = tabAutoBlock:CreateSection({ Title = "命中箱尺寸",  }))
-            section:AddSlider({ Text = "宽度 (X)", Value={Min=1,Max=20,Default=cfg.get("hitboxW",4.5)}, Increment=0.1, Decimals = false, Callback=function(v) getgenv().BaseHitboxSize = Vector3.new(v, getgenv().BaseHitboxSize.Y, getgenv().BaseHitboxSize.Z); cfg.set("hitboxW", v); UpdateAllHitboxVisuals() end }))
-            section:AddSlider({ Text = "高度 (Y)", Value={Min=1,Max=20,Default=cfg.get("hitboxH",6)}, Increment=0.1, Decimals = false, Callback=function(v) getgenv().BaseHitboxSize = Vector3.new(getgenv().BaseHitboxSize.X, v, getgenv().BaseHitboxSize.Z); cfg.set("hitboxH", v); UpdateAllHitboxVisuals() end }))
-            section:AddSlider({ Text = "长度 (Z)", Value={Min=1,Max=20,Default=cfg.get("hitboxL",7.5)}, Increment=0.1, Decimals = false, Callback=function(v) getgenv().BaseHitboxSize = Vector3.new(getgenv().BaseHitboxSize.X, getgenv().BaseHitboxSize.Y, v); cfg.set("hitboxL", v); UpdateAllHitboxVisuals() end }))
-            section:AddSlider({ Text = "整体缩放", Value={Min=0.2,Max=3.0,Default=cfg.get("hitboxScale",1.0)}, Increment=0.05, Decimals = false, Callback=function(v) getgenv().HitboxScale = v; cfg.set("hitboxScale", v); UpdateAllHitboxVisuals() end }))
-            section:AddSlider({ Text = "Z轴偏移 (负值向后)", Value={Min=-10,Max=0,Default=cfg.get("hitboxOffset",-1.4)}, Increment=0.1, Decimals = false, Callback=function(v) getgenv().HitboxOffset = v; cfg.set("hitboxOffset", v); UpdateAllHitboxVisuals() end }))
-
-            local section = tabAutoBlock:CreateSection({ Title = "可视化选项",  }))
-            section:AddToggle({ Text = "显示命中箱", Default=cfg.get("showHitboxVisual",true), Callback=function(state) getgenv().ShowHitboxVisual = state; cfg.set("showHitboxVisual", state); UpdateAllHitboxVisuals() end }))
-            section:AddToggle({ Text = "显示边框", Default=cfg.get("showOutline",true), Callback=function(state) getgenv().ShowOutline = state; cfg.set("showOutline", state); UpdateAllHitboxVisuals() end }))
-            section:AddSlider({ Text = "边框粗细", Value={Min=0.01,Max=0.5,Default=cfg.get("outlineThick",0.05)}, Increment=0.01, Decimals = false, Callback=function(v) getgenv().OutlineThickness = v; cfg.set("outlineThick", v); UpdateAllHitboxVisuals() end }))
-
-            local section = tabAutoBlock:CreateSection({ Title = "颜色（R/G/B 滑块）",  }))
-            local function rgbSliders(title, prefix)
-                local r = cfg.get(prefix.."R",255)
-                local g = cfg.get(prefix.."G",255)
-                local b = cfg.get(prefix.."B",255)
-                section:AddSlider({ Text = title.." R", Min = 0, Max = 255, Default = r, Increment=1, Decimals = false, Callback=function(v) cfg.set(prefix.."R", v); local c = Color3.fromRGB(cfg.get(prefix.."R",255), cfg.get(prefix.."G",255), cfg.get(prefix.."B",255)); getgenv()[title=="填充" and "HitboxColor" or "HitboxOutlineColor"] = c; UpdateAllHitboxVisuals() end }))
-                section:AddSlider({ Text = title.." G", Min = 0, Max = 255, Default = g, Increment=1, Decimals = false, Callback=function(v) cfg.set(prefix.."G", v); local c = Color3.fromRGB(cfg.get(prefix.."R",255), cfg.get(prefix.."G",255), cfg.get(prefix.."B",255)); getgenv()[title=="填充" and "HitboxColor" or "HitboxOutlineColor"] = c; UpdateAllHitboxVisuals() end }))
-                section:AddSlider({ Text = title.." B", Min = 0, Max = 255, Default = b, Increment=1, Decimals = false, Callback=function(v) cfg.set(prefix.."B", v); local c = Color3.fromRGB(cfg.get(prefix.."R",255), cfg.get(prefix.."G",255), cfg.get(prefix.."B",255)); getgenv()[title=="填充" and "HitboxColor" or "HitboxOutlineColor"] = c; UpdateAllHitboxVisuals() end }))
-            end
-            rgbSliders("填充", "hitboxColor")
-            rgbSliders("边框", "outlineColor")
-
-            local section = tabAutoBlock:CreateSection({ Title = "说明",  }))
-            section:AddParagraph({ "本自动格挡源自fixhub。", "关注fixfox谢谢喵" }))
-
-            -- ==================== 界面选项卡 ====================
             local section = tabUI:CreateSection({ Title = "界面设置",  }))
-            section:AddToggle({ Text = "快捷键菜单", Default=true, Callback=function(v) --[[ 原 Library.KeybindFrame 不可用，保留空 ]] end }))
-            section:AddToggle({ Text = "自定义光标", Default=true, Callback=function(v) --[[ 原库功能，暂忽略 ]] end }))
-            section:AddDropdown({ Text = "通知位置", Values={"Left","Right"}, Default = , Callback=function(v) --[[ 原 Library:SetNotifySide ]] end }))
-            section:AddDropdown({ Text = "UI 缩放", Values={"25%","50%","75%","100%","125%","150%","175%","200%"}, Default = , Callback=function(v) local percent = v:gsub("%%",""); --[[ 原 Library:SetDPIScale ]] end }))
+            section:AddToggle({ Text = "快捷键菜单", Default=true, Callback=function(v)  end }))
+            section:AddToggle({ Text = "自定义光标", Default=true, Callback=function(v)  end }))
+            section:AddDropdown({ Text = "通知位置", Values={"Left","Right"}, Default = , Callback=function(v)  end }))
+            section:AddDropdown({ Text = "UI 缩放", Values={"25%","50%","75%","100%","125%","150%","175%","200%"}, Default = , Callback=function(v) local percent = v:gsub("%%","");  end }))
 
-            section:AddButton({ Text = "销毁界面", Callback=function() --[[ 原 Library:Unload ]] end }))
+            section:AddButton({ Text = "销毁界面", Callback=function()  end }))
 
-            -- NullUI 无 ThemeManager 和 SaveManager，此处省略主题和保存配置，但 cfg 仍保存所有设置。
             print("傻子脚本加载完了")
         end
 
